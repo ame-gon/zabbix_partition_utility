@@ -25,7 +25,15 @@ SQL コマンドは以下の仕様に沿って作成されます。
 ## 注意事項
 - 本スクリプトで作成される SQL コマンドで作成されるパーティションは MAXVALUE は設定していません。適宜新しいパーティションを作成して運用してください。
 - 本スクリプトで作成される SQL コマンドは初回パーティショニング作成用です。冪等性はありません。
+- 利用に際しては十分検証を行った上でご利用ください。本スクリプトの利用によって発生した事故や事象についての責任は負いません。
+
 ## 使用方法
+### 事前準備
+- conf.txt.org をコピーして conf.txt として保存
+- 必要に応じて conf.txt 内の設定を調整
+    - 設定できるパラメータの詳細は conf.txt 内のコメントを参照してください。
+
+### 実行方法
 - パーティショニングを実施したいサーバーに本リポジトリを展開
 - 展開したリポジトリ配下に移動
 - 以下のコマンドを実行して SQLコマンドが記載されたファイルを作成
@@ -46,4 +54,29 @@ DB にログインして以下のコマンドを実行
 
 ```
 SELECT TABLE_NAME,PARTITION_NAME,DATA_FREE,TABLE_ROWS FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_SCHEMA = 'zabbix' AND TABLE_NAME = '<テーブル名>';
+```
+
+history テーブルを確認した例
+
+```
+MariaDB [zabbix]> SELECT TABLE_NAME,PARTITION_NAME,DATA_FREE,TABLE_ROWS FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_SCHEMA = 'zabbix' AND TABLE_NAME = 'history';
++------------+----------------+-----------+------------+
+| TABLE_NAME | PARTITION_NAME | DATA_FREE | TABLE_ROWS |
++------------+----------------+-----------+------------+
+| history    | p202210        |         0 |       4707 |
+| history    | p202211        |         0 |          0 |
+| history    | p202212        |         0 |          0 |
+| history    | p202301        |         0 |          0 |
+| history    | p202302        |         0 |          0 |
+| history    | p202303        |         0 |          0 |
+| history    | p202304        |         0 |          0 |
+| history    | p202305        |         0 |          0 |
+| history    | p202306        |         0 |          0 |
+| history    | p202307        |         0 |          0 |
+| history    | p202308        |         0 |          0 |
+| history    | p202309        |         0 |          0 |
++------------+----------------+-----------+------------+
+12 rows in set (0.00 sec)
+
+MariaDB [zabbix]>
 ```
