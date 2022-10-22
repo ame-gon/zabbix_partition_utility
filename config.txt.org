@@ -1,0 +1,4 @@
+# 現在時から過去何か月分さかのぼったパーティションを作成するか指定
+GLOBAL_PAST_PARTITION_COUNT=0
+# 全部で何か月分のパーティションを作成するか指定
+GLOBAL_PARTITION_COUNT=12
