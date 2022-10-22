@@ -78,6 +78,22 @@
             fi
             PARTITION_NAME="p${PARTITION_YEAR}${PARTITION_MONTH}"
 
+            # UNIX_TIMESTAMP に渡す年月を作成する：パーティション名の年月より1か月後を指定！
+            # UNIX_TIMESTAMP 用の変数を初期化
+            UNIX_TIMESTAMP_PARTITION_YEAR=$PARTITION_YEAR
+            UNIX_TIMESTAMP_PARTITION_MONTH=$PARTITION_MONTH
+
+            # まず月を１か月後に設定
+            UNIX_TIMESTAMP_PARTITION_MONTH=$(expr $PARTITION_MONTH + 1)
+            # パーティション作成月が13になった場合、パーティション作成年を +1 して作成付きは 1 にする 。
+            if [[ $UNIX_TIMESTAMP_PARTITION_MONTH -eq 13 ]]; then
+                UNIX_TIMESTAMP_PARTITION_MONTH=1
+                UNIX_TIMESTAMP_PARTITION_YEAR=$(expr $PARTITION_YEAR + 1)
+            fi
+            if [[ ${UNIX_TIMESTAMP_PARTITION_MONTH} =~ ^[0-9]$ ]]; then
+                UNIX_TIMESTAMP_PARTITION_MONTH="0${UNIX_TIMESTAMP_PARTITION_MONTH}"
+            fi
+
             # 行末にカンマをつけるかどうか確認。
             # つける必要がある場合には END_CUNMA にカンマをセット。
             END_CUNMA=""
@@ -85,7 +101,7 @@
                 END_CUNMA=","
             fi
 
-            echo "PARTITION ${PARTITION_NAME} VALUES LESS THAN (UNIX_TIMESTAMP(\"${PARTITION_YEAR}-${PARTITION_MONTH}-01 00:00:00\")) ENGINE = InnoDB${END_CUNMA}"
+            echo "PARTITION ${PARTITION_NAME} VALUES LESS THAN (UNIX_TIMESTAMP(\"${UNIX_TIMESTAMP_PARTITION_YEAR}-${UNIX_TIMESTAMP_PARTITION_MONTH}-01 00:00:00\")) ENGINE = InnoDB${END_CUNMA}"
 
         done
 
