@@ -9,7 +9,7 @@
 # );
 
 # 外部定義ファイルの読み込み
-source ./conf.txt
+source ./config.txt
 
 ### DEFINITION：外部ファイルから読み込み
 # 現在時から過去何か月分さかのぼったパーティションを作成するか指定
